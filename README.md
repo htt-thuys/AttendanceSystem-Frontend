@@ -1,16 +1,52 @@
-# React + Vite
+# React + Vite Frontend Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Đây là bộ mã nguồn Frontend được xây dựng trên nền tảng **React** sử dụng công cụ build **Vite** để tối ưu hóa tốc độ phát triển và hiệu năng.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Công nghệ sử dụng
 
-## React Compiler
+- **React 19**: Thư viện UI phổ biến nhất hiện nay.
+- **Vite**: Công cụ build siêu nhanh thay thế cho Create React App.
+- **ESLint**: Đảm bảo quy chuẩn và chất lượng mã nguồn.
+- **React Router Dom**: Quản lý điều hướng trang.
+- **Axios**: Quản lý các yêu cầu gọi API.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Cài đặt và Sử dụng
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Làm theo các bước sau để chạy dự án dưới máy cục bộ:
+
+### 1. Yêu cầu hệ thống
+
+- Đã cài đặt **Node.js** (Phiên bản 24.14.x trở lên).
+- Đã cài đặt **npm**.
+
+### 2. Cài đặt các gói phụ thuộc
+
+Mở terminal tại thư mục gốc của dự án và chạy:
+
+```bash
+npm install
+```
+
+### 3. Khởi chạy môi trường Phát triển (Development)
+
+Chạy lệnh sau để khởi động server:
+
+```bash
+npm run dev
+```
+
+Sau đó, truy cập vào đường dẫn: http://localhost:5173 (Đây là localhost mặc định)
+
+### 4. Build dự án (Production)
+
+Để đóng gói dự án cho việc triển khai lên server thực tế:
+
+```bash
+npm run build
+```
+
+Kết quả sẽ nằm trong thư mục dist/.

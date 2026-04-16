@@ -1,52 +1,71 @@
 # React + Vite Frontend Project
 
-Đây là bộ mã nguồn Frontend được xây dựng trên nền tảng **React** sử dụng công cụ build **Vite** để tối ưu hóa tốc độ phát triển và hiệu năng.
+This is a Frontend codebase built on the **React** platform using the **Vite** build tool to optimize development speed and performance.
 
 ---
 
-## 🚀 Công nghệ sử dụng
+## 🚀 Technologies Used
 
-- **React 19**: Thư viện UI phổ biến nhất hiện nay.
-- **Vite**: Công cụ build siêu nhanh thay thế cho Create React App.
-- **ESLint**: Đảm bảo quy chuẩn và chất lượng mã nguồn.
-- **React Router Dom**: Quản lý điều hướng trang.
-- **Axios**: Quản lý các yêu cầu gọi API.
+- **React 19**: The most popular UI library today.
+- **Vite**: A lightning-fast build tool designed to replace Create React App.
+- **ESLint**: Ensures code standards and quality.
+- **React Router Dom**: Handles client-side routing and navigation.
+- **Axios**: Manages API requests and services.
 
 ---
 
-## 🛠️ Cài đặt và Sử dụng
+## 🛠️ Installation and Usage
 
-Làm theo các bước sau để chạy dự án dưới máy cục bộ:
+Follow these steps to run the project locally:
 
-### 1. Yêu cầu hệ thống
+### 1. Prerequisites
 
-- Đã cài đặt **Node.js** (Phiên bản 24.14.x trở lên).
-- Đã cài đặt **npm**.
+- **Node.js** installed (Version 24.14.x or higher).
+- **npm** (Node Package Manager) installed.
 
-### 2. Cài đặt các gói phụ thuộc
+### 2. Install Dependencies
 
-Mở terminal tại thư mục gốc của dự án và chạy:
+Open your terminal in the project's root directory and run:
 
 ```bash
 npm install
 ```
 
-### 3. Khởi chạy môi trường Phát triển (Development)
+### 3. Launch Development Environment
 
-Chạy lệnh sau để khởi động server:
+Run the following command to start the development server:
 
 ```bash
 npm run dev
 ```
 
-Sau đó, truy cập vào đường dẫn: http://localhost:5173 (Đây là localhost mặc định)
+Then, access the application at: http://localhost:5173 (This is the default localhost port).
 
-### 4. Build dự án (Production)
+### 4. Code Quality Check (Linting)
 
-Để đóng gói dự án cho việc triển khai lên server thực tế:
+To check for syntax errors and enforce formatting standards, run:
+
+```bash
+npm run lint
+```
+
+### 5. Build for Production
+
+To bundle the project for deployment to a production server:
 
 ```bash
 npm run build
 ```
 
-Kết quả sẽ nằm trong thư mục dist/.
+### Key Project Structure
+
+```bash
+src/
+ ├── assets/      # Static images, fonts, and icons
+ ├── components/  # Shared/reusable components
+ ├── hooks/       # Custom React hooks
+ ├── pages/       # Main page components (Views)
+ ├── services/    # Axios configuration and API calling functions
+ ├── App.jsx      # Root component of the application
+ └── main.jsx     # Entry point of the application
+```

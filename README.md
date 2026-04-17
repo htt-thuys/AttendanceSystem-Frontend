@@ -7,6 +7,7 @@ This is a Frontend codebase built on the **React** platform using the **Vite** b
 ## 🚀 Technologies Used
 
 - **React 19**: The most popular UI library today.
+- **Typescript 6.x**:
 - **Vite**: A lightning-fast build tool designed to replace Create React App.
 - **ESLint**: Ensures code standards and quality.
 - **React Router Dom**: Handles client-side routing and navigation.

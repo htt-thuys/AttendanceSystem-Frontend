@@ -6,7 +6,8 @@ This is a Frontend codebase built on the **React** platform using the **Vite** b
 
 ## 🚀 Technologies Used
 
-- **React 19**: The most popular UI library today.
+- **React 19**: The most popular UI library.
+- **Typescript 6.x**: The standard for type safety and modern JavaScript development.
 - **Vite**: A lightning-fast build tool designed to replace Create React App.
 - **ESLint**: Ensures code standards and quality.
 - **React Router Dom**: Handles client-side routing and navigation.
@@ -60,12 +61,47 @@ npm run build
 ### Key Project Structure
 
 ```bash
-src/
- ├── assets/      # Static images, fonts, and icons
- ├── components/  # Shared/reusable components
- ├── hooks/       # Custom React hooks
- ├── pages/       # Main page components (Views)
- ├── services/    # Axios configuration and API calling functions
- ├── App.jsx      # Root component of the application
- └── main.jsx     # Entry point of the application
+frontend/
+├── src
+│   ├── assets/             # Static assets: images, icons, fonts, global styles
+│   │
+│   ├── modules/            # Business domains (aligned with Backend modules)
+│   │   ├── auth/           # Authentication UI & logic
+│   │   ├── user/           # User management UI
+│   │   ├── recognition/    # Recognition display & processing flow
+│   │   ├── meeting/        # Meeting management UI
+│   │   ├── attendance/     # Attendance handling UI
+│   │   └── notification/   # Notification system (toast, realtime)
+│   │
+│   │   └── user/
+│   │       ├── components/ # Module-specific UI components
+│   │       ├── hooks/      # Module-specific logic (custom hooks)
+│   │       ├── services/   # Module-specific API calls
+│   │       └── types.ts    # Data models and types
+│   │
+│   ├── components/         # Global reusable UI components (Button, Modal, Table)
+│   │
+│   ├── layouts/            # Layouts (MainLayout, AuthLayout, AdminLayout)
+│   │
+│   ├── pages/              # Compose modules into full screens (routing level)
+│   │
+│   ├── services/           # Global API layer (Axios instance, interceptors)
+│   │
+│   ├── store/              # Global state management (Redux / Zustand)
+│   │
+│   ├── hooks/              # Shared hooks (useAuth, useDebounce, etc.)
+│   │
+│   ├── config/             # Environment variables, constants, app configuration
+│   │
+│   ├── types/              # Global TypeScript types/interfaces
+│   │
+│   ├── utils/              # Utility/helper functions (formatting, validation)
+│   │
+│   ├── main.tsx            # Application entry point
+│   └── App.tsx             # Root component
+│
+├── public/                 # Static public assets
+├── .env                    # Environment configuration
+└── README.md               # Project documentation
+
 ```

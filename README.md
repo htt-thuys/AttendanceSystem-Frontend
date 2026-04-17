@@ -87,8 +87,6 @@ frontend/
 │   │
 │   ├── services/           # Global API layer (Axios instance, interceptors)
 │   │
-│   ├── store/              # Global state management (Redux / Zustand)
-│   │
 │   ├── hooks/              # Shared hooks (useAuth, useDebounce, etc.)
 │   │
 │   ├── config/             # Environment variables, constants, app configuration
@@ -103,5 +101,4 @@ frontend/
 ├── public/                 # Static public assets
 ├── .env                    # Environment configuration
 └── README.md               # Project documentation
-
 ```

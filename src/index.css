@@ -12,6 +12,8 @@
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --card-bg: #ffffff;
+  --card-text: var(--text);
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -45,6 +47,8 @@
     --social-bg: rgba(47, 48, 58, 0.5);
     --shadow:
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      --card-bg: #0f1724;
+      --card-text: var(--text);
   }
 
   #social .button-icon {
@@ -111,3 +115,15 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* Adaptive text utilities to follow color-scheme variables */
+.text-adaptive { color: var(--text) !important; }
+.text-adaptive-h { color: var(--text-h) !important; }
+
+/* Adaptive background utilities for dark mode support */
+.bg-adaptive { background: var(--bg) !important; }
+
+/* Card background and on-card text for better contrast in dark mode */
+.bg-card { background: var(--card-bg) !important; }
+.text-on-card { color: var(--card-text) !important; }
+

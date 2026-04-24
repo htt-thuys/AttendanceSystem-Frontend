@@ -14,6 +14,10 @@
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
   --card-bg: #ffffff;
   --card-text: var(--text);
+  --camera-bg: #f3f4f6;
+  --camera-muted-bg: rgba(15, 23, 42, 0.06);
+  --camera-text: #111827;
+  --camera-subtext: #4b5563;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -49,6 +53,10 @@
       rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
       --card-bg: #0f1724;
       --card-text: var(--text);
+        --camera-bg: #000000;
+        --camera-muted-bg: rgba(255, 255, 255, 0.08);
+        --camera-text: #f9fafb;
+        --camera-subtext: #d1d5db;
   }
 
   #social .button-icon {
@@ -61,11 +69,11 @@ body {
 }
 
 #root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  text-align: left;
+  border-inline: none;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -126,4 +134,10 @@ code {
 /* Card background and on-card text for better contrast in dark mode */
 .bg-card { background: var(--card-bg) !important; }
 .text-on-card { color: var(--card-text) !important; }
+
+/* Camera viewport utilities */
+.bg-camera { background: var(--camera-bg) !important; }
+.bg-camera-muted { background: var(--camera-muted-bg) !important; }
+.text-camera { color: var(--camera-text) !important; }
+.text-camera-subtext { color: var(--camera-subtext) !important; }
 

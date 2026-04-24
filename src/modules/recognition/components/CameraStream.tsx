@@ -62,24 +62,29 @@ export const CameraStream: React.FC = () => {
       </div>
 
       {/* Camera Viewport */}
-      <div className="relative aspect-video bg-[#0f172a] flex items-center justify-center transition-all overflow-hidden">
-        {error && <div className="p-4 text-sm text-red-400">{error}</div>}
+      <div className="relative aspect-video bg-camera flex items-center justify-center transition-all overflow-hidden">
+        {error && <div className="p-4 text-sm text-red-500">{error}</div>}
 
         <video ref={videoRef} className={`w-full h-full object-cover ${isActive ? '' : 'hidden'}`} playsInline muted />
 
         {!isActive && !error && (
-          <div className="flex flex-col items-center gap-4 animate-fade-in">
-            <div className="p-6 bg-slate-800/50 rounded-full">
-              <VideoOff size={48} className="text-adaptive" />
+          <div className="flex flex-col items-center gap-5 animate-fade-in text-center px-6">
+            <div className="p-8 bg-camera-muted rounded-full border border-white/10">
+              <VideoOff size={52} className="text-camera" />
             </div>
-            <p className="text-adaptive font-medium">Camera is off</p>
+            <div className="space-y-2">
+              <h4 className="text-camera text-3xl font-bold">Camera Offline</h4>
+              <p className="text-camera-subtext max-w-xl">
+                Activate the facial recognition system to start detecting attendances.
+              </p>
+            </div>
           </div>
         )}
 
         {isActive && (
           <div className="absolute top-4 left-4 flex items-center gap-2">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-ping"></span>
-            <span className="text-white text-xs font-bold uppercase tracking-wider">Live</span>
+            <span className="text-white text-xs font-bold uppercase tracking-wider bg-black/45 px-2 py-1 rounded-md">Live</span>
           </div>
         )}
       </div>

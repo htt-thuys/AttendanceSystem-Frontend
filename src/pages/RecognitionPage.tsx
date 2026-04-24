@@ -5,8 +5,9 @@ const RecognitionPage: React.FC = () => {
   return (
     <div className="min-h-screen bg-adaptive p-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-adaptive-h">Attendance Recognition</h1>
-        <p className="text-adaptive">Position yourself in front of the camera for automatic check-in.</p>
+        <img src="/src/assets/LogoEnclave.png" alt="Logo" className="w-35 h-auto" />
+        {/* <h1 className="text-2xl font-bold text-adaptive-h">Attendance Recognition</h1>
+        <p className="text-adaptive">Position yourself in front of the camera for automatic check-in.</p> */}
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

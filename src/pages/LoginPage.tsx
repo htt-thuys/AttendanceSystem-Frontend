@@ -29,8 +29,11 @@ const LoginPage: React.FC = () => {
         return
       }
 
-      const data = (await response.json()) as { success?: boolean; message?: string }
+      const data = (await response.json()) as { success?: boolean; message?: string; token?: string }
       if (data.success) {
+        if (data.token) {
+          localStorage.setItem('auth_token', data.token)
+        }
         navigate('/recognition')
         return
       }

@@ -24,7 +24,7 @@ export const CameraStream: React.FC = () => {
           'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
       },
       runningMode: 'VIDEO',
-      minDetectionConfidence: 0.5,
+      minDetectionConfidence: 0.55,
     });
 
     return detectorRef.current;

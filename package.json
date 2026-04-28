@@ -11,6 +11,9 @@
     "init-tailwind": "tailwindcss init -p"
   },
   "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/face_detection": "^0.4.1646425229",
+    "@mediapipe/tasks-vision": "^0.10.14",
     "@tailwindcss/vite": "^4.2.4",
     "lucide-react": "^1.8.0",
     "react": "^19.2.4",

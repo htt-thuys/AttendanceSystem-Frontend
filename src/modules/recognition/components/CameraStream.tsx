@@ -65,7 +65,12 @@ export const CameraStream: React.FC = () => {
       <div className="relative flex aspect-video items-center justify-center overflow-hidden bg-slate-50/90 transition-all dark:bg-[rgba(12,20,40,0.9)]">
         {error && <div className="p-4 text-sm text-red-500">{error}</div>}
 
-        <video ref={videoRef} className={`w-full h-full object-cover ${isActive ? '' : 'hidden'}`} playsInline muted />
+        <video
+          ref={videoRef}
+          className={`h-full w-full object-cover ${isActive ? '' : 'hidden'} -scale-x-100`}
+          playsInline
+          muted
+        />
 
         {!isActive && !error && (
           <div className="flex flex-col items-center gap-5 animate-fade-in px-6 text-center">

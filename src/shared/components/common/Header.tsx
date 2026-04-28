@@ -2,7 +2,7 @@ import React from 'react'
 
 const Header: React.FC = () => {
   return (
-    <header className="mb-8">
+    <header className="mb-3">
       <a
         href="https://enclave.vn"
         target="_blank"

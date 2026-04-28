@@ -1,11 +1,100 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Camera, Video, VideoOff } from 'lucide-react'; // Dùng lucide-react cho icon
+import { Camera, Video, VideoOff } from 'lucide-react';
+import { FilesetResolver, FaceDetector } from '@mediapipe/tasks-vision';
 import { Button } from '@/shared/components/ui/Button';
 
 export const CameraStream: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const detectorRef = useRef<FaceDetector | null>(null);
+  const rafRef = useRef<number | null>(null);
   const [isActive, setIsActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const ensureDetector = async () => {
+    if (detectorRef.current) return detectorRef.current;
+
+    const fileset = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+    );
+
+    detectorRef.current = await FaceDetector.createFromOptions(fileset, {
+      baseOptions: {
+        modelAssetPath:
+          'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite',
+      },
+      runningMode: 'VIDEO',
+      minDetectionConfidence: 0.55,
+    });
+
+    return detectorRef.current;
+  };
+
+  const stopDetectionLoop = () => {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    const canvas = canvasRef.current;
+    if (canvas) {
+      const ctx = canvas.getContext('2d');
+      ctx?.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
+  const drawDetections = (
+    detections: Array<{ boundingBox?: { originX: number; originY: number; width: number; height: number } }>
+  ) => {
+    const canvas = canvasRef.current;
+    const video = videoRef.current;
+    if (!canvas || !video) return;
+
+    const width = video.videoWidth;
+    const height = video.videoHeight;
+    if (!width || !height) return;
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.clearRect(0, 0, width, height);
+    ctx.strokeStyle = 'rgba(34, 197, 94, 0.9)';
+    ctx.lineWidth = 3;
+
+    detections.forEach((detection) => {
+      const box = detection.boundingBox;
+      if (!box) return;
+      ctx.strokeRect(box.originX, box.originY, box.width, box.height);
+    });
+  };
+
+  const startDetectionLoop = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    try {
+      await ensureDetector();
+    } catch (err) {
+      console.error('detector init error', err);
+      setError('Face detector failed to load.')
+      return;
+    }
+
+    const tick = () => {
+      if (!videoRef.current || !detectorRef.current || !isActive) return;
+      if (video.readyState >= 2) {
+        const result = detectorRef.current.detectForVideo(video, performance.now());
+        drawDetections(result.detections || []);
+      }
+      rafRef.current = requestAnimationFrame(tick);
+    };
+
+    rafRef.current = requestAnimationFrame(tick);
+  };
 
   const startCamera = async () => {
     try {
@@ -19,6 +108,7 @@ export const CameraStream: React.FC = () => {
         await videoRef.current.play().catch(() => {});
       }
       setError(null);
+      await startDetectionLoop();
     } catch (err) {
       console.error('startCamera error', err);
       setError('Cannot access camera. Allow permissions or use HTTPS/localhost.');
@@ -32,6 +122,7 @@ export const CameraStream: React.FC = () => {
       stream.getTracks().forEach((t) => t.stop());
     }
     if (videoRef.current) videoRef.current.srcObject = null;
+    stopDetectionLoop();
   };
 
   useEffect(() => {
@@ -70,6 +161,10 @@ export const CameraStream: React.FC = () => {
           className={`h-full w-full object-cover ${isActive ? '' : 'hidden'} -scale-x-100`}
           playsInline
           muted
+        />
+        <canvas
+          ref={canvasRef}
+          className={`pointer-events-none absolute inset-0 h-full w-full ${isActive ? '' : 'hidden'} -scale-x-100`}
         />
 
         {!isActive && !error && (

@@ -4,7 +4,7 @@ import Header from '@/shared/components/common/Header';
 
 const RecognitionPage: React.FC = () => {
   return (
-    <div className="min-h-screen bg-[radial-gradient(1200px_800px_at_15%_10%,rgba(227,236,255,0.85),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(196,220,255,0.55),transparent_60%),linear-gradient(180deg,#f8fbff_0%,#e9f1ff_100%)] p-8 text-slate-900 dark:bg-[radial-gradient(1200px_800px_at_15%_10%,rgba(30,60,140,0.65),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(20,80,150,0.45),transparent_60%),linear-gradient(180deg,#0b1326_0%,#090f1e_100%)] dark:text-[#d9e2f6]">
+    <div className="min-h-screen bg-[radial-gradient(1200px_800px_at_15%_10%,rgba(227,236,255,0.85),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(196,220,255,0.55),transparent_60%),linear-gradient(180deg,#f8fbff_0%,#e9f1ff_100%)] p-8 text-slate-900 dark:bg-[radial-gradient(1200px_800px_at_15%_10%,rgba(88,112,156,0.6),transparent_60%),radial-gradient(900px_600px_at_90%_20%,rgba(70,108,150,0.5),transparent_60%),linear-gradient(180deg,#182235_0%,#141c2b_100%)] dark:text-[#d9e2f6]">
       <Header />
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

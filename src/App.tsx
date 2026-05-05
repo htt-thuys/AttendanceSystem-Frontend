@@ -5,6 +5,7 @@ import RecognitionPage from './pages/RecognitionPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminUserPage from './pages/admin/AdminUserPage'
 import AdminAttendanceLogsPage from './pages/admin/AdminAttendanceLogsPage'
+import EmployeeDashboardPage from './pages/EmployeeDashboardPage'
 
 const RequireAuth: React.FC<{ children: React.ReactElement }> = ({ children }) => {
   const location = useLocation()
@@ -22,7 +23,15 @@ const App: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={token ? <Navigate to="/recognition" replace /> : <LoginPage />} />
+      <Route path="/" element={token ? <Navigate to="/dashboard" replace /> : <LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <RequireAuth>
+            <EmployeeDashboardPage />
+          </RequireAuth>
+        }
+      />
       <Route
         path="/recognition"
         element={

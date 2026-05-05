@@ -1,2 +1,43 @@
 @import "tailwindcss";
 
+@layer utilities {
+	.scrollbar-elegant {
+		scrollbar-width: thin;
+		scrollbar-color: rgba(99, 115, 129, 0.55) transparent;
+	}
+
+	.scrollbar-elegant::-webkit-scrollbar {
+		width: 8px;
+	}
+
+	.scrollbar-elegant::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	.scrollbar-elegant::-webkit-scrollbar-thumb {
+		background: rgba(99, 115, 129, 0.35);
+		border-radius: 999px;
+		border: 2px solid transparent;
+		background-clip: content-box;
+	}
+
+	.scrollbar-elegant::-webkit-scrollbar-thumb:hover {
+		background: rgba(99, 115, 129, 0.55);
+		background-clip: content-box;
+	}
+
+	.dark .scrollbar-elegant {
+		scrollbar-color: rgba(170, 184, 214, 0.6) transparent;
+	}
+
+	.dark .scrollbar-elegant::-webkit-scrollbar-thumb {
+		background: rgba(170, 184, 214, 0.35);
+		background-clip: content-box;
+	}
+
+	.dark .scrollbar-elegant::-webkit-scrollbar-thumb:hover {
+		background: rgba(170, 184, 214, 0.6);
+		background-clip: content-box;
+	}
+}
+

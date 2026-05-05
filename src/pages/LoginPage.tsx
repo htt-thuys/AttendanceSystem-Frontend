@@ -29,18 +29,26 @@ const LoginPage: React.FC = () => {
         return
       }
 
-      const data = (await response.json()) as { success?: boolean; message?: string; token?: string }
+      const data = (await response.json()) as {
+        success?: boolean
+        message?: string
+        token?: string
+        role?: string
+      }
       if (data.success) {
         if (data.token) {
           localStorage.setItem('auth_token', data.token)
         }
-        navigate('/recognition')
+        if (data.role) {
+          localStorage.setItem('auth_role', data.role)
+        }
+        navigate('/dashboard')
         return
       }
 
       setErrorMessage(data.message || 'Invalid username or password.')
     } catch {
-      setErrorMessage('Network error. Please try again.')
+      setErrorMessage('Unable to connect to the database!')
     }
   }
 

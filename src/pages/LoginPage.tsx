@@ -73,7 +73,7 @@ const LoginPage: React.FC = () => {
         <div className="mb-6 text-center">
           <div>
             <img
-              src="logo"
+              src={logo}
               alt="Logo"
               className="mx-auto mb-3 w-[140px] h-auto cursor-pointer transition-opacity hover:opacity-80"
             />

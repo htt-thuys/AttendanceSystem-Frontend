@@ -2,6 +2,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import LogoutButton from './LogoutButton'
 import MenuButton from './MenuButton'
+import logo from '../assets/LogoEnclave.png'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ const Header: React.FC = () => {
         onClick={handleLogoClick}
       >
         <img
-          src="/src/assets/LogoEnclave.png"
+          src="logo"
           alt="Logo"
           className="w-[140px] h-auto cursor-pointer transition-opacity hover:opacity-80 dark:brightness-110 dark:contrast-125"
         />

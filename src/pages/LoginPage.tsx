@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import logo from '../assets/LogoEnclave.png'
 
 const LoginPage: React.FC = () => {
   const navigate = useNavigate()
@@ -72,7 +73,7 @@ const LoginPage: React.FC = () => {
         <div className="mb-6 text-center">
           <div>
             <img
-              src="/src/assets/LogoEnclave.png"
+              src="logo"
               alt="Logo"
               className="mx-auto mb-3 w-[140px] h-auto cursor-pointer transition-opacity hover:opacity-80"
             />

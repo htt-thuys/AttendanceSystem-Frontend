@@ -2,22 +2,61 @@ import React from 'react'
 import Header from '@/shared/components/common/Header'
 
 const EmployeeDashboardPage: React.FC = () => {
+  const employeeName = localStorage.getItem('full_name') || 'Employee'
+  const [now, setNow] = React.useState(() => new Date())
+
+  React.useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNow(new Date())
+    }, 1000)
+
+    return () => {
+      window.clearInterval(intervalId)
+    }
+  }, [])
+
+  const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+  const localDate = new Intl.DateTimeFormat('en-US', {
+    timeZone: localTimeZone,
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(now)
+  const localTime = new Intl.DateTimeFormat('en-US', {
+    timeZone: localTimeZone,
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false,
+  }).format(now)
+  const offsetMinutes = -now.getTimezoneOffset()
+  const offsetSign = offsetMinutes >= 0 ? '+' : '-'
+  const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60)
+  const offsetRemainder = Math.abs(offsetMinutes) % 60
+  const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}${
+    offsetRemainder ? `:${String(offsetRemainder).padStart(2, '0')}` : ''
+  }`
   const attendanceCards = [
     {
       title: 'Today',
-      value: 'May 5, 2026',
-      meta: 'Current date',
+      date: localDate,
+      time: localTime,
+      meta: utcOffset,
       accent: 'bg-sky-500/10 text-sky-500',
     },
     {
       title: 'Events Attended',
       value: '21',
+      date: null,
+      time: null,
       meta: 'Total events',
       accent: 'bg-emerald-500/10 text-emerald-500',
     },
     {
       title: 'On-time Rate',
       value: '95%',
+      date: null,
+      time: null,
       meta: 'Check-ins',
       accent: 'bg-amber-500/10 text-amber-500',
     },
@@ -102,7 +141,7 @@ const EmployeeDashboardPage: React.FC = () => {
                 Welcome back
               </p>
               <h1 className="mt-2 font-['Space_Grotesk'] text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
-                Eleanor Nguyen
+                {employeeName}
               </h1>
               <p className="mt-1 text-sm text-slate-500 dark:text-[rgba(170,184,214,0.7)]">
                 Here is your attendance summary and recent updates.
@@ -205,9 +244,20 @@ const EmployeeDashboardPage: React.FC = () => {
                       {card.meta}
                     </span>
                   </div>
-                  <p className="mt-4 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
-                    {card.value}
-                  </p>
+                  {card.date && card.time ? (
+                    <div className="mt-4">
+                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-[rgba(170,184,214,0.7)]">
+                        {card.date}
+                      </p>
+                      <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
+                        {card.time}
+                      </p>
+                    </div>
+                  ) : (
+                    <p className="mt-4 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
+                      {card.value}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>

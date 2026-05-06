@@ -34,6 +34,7 @@ const LoginPage: React.FC = () => {
         message?: string
         token?: string
         role?: string
+        full_name?: string
       }
       if (data.success) {
         if (data.token) {
@@ -41,6 +42,9 @@ const LoginPage: React.FC = () => {
         }
         if (data.role) {
           localStorage.setItem('auth_role', data.role)
+        }
+        if (data.full_name) {
+          localStorage.setItem('full_name', data.full_name)
         }
         navigate('/dashboard')
         return

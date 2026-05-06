@@ -244,20 +244,22 @@ const EmployeeDashboardPage: React.FC = () => {
                       {card.meta}
                     </span>
                   </div>
-                  {card.date && card.time ? (
-                    <div className="mt-4">
-                      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-[rgba(170,184,214,0.7)]">
-                        {card.date}
+                  <div className="mt-4 flex h-[60px] flex-col justify-end">
+                    {card.date && card.time ? (
+                      <>
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-[rgba(170,184,214,0.7)]">
+                          {card.date}
+                        </p>
+                        <p className="mt-1 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
+                          {card.time}
+                        </p>
+                      </>
+                    ) : (
+                      <p className="text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
+                        {card.value}
                       </p>
-                      <p className="mt-2 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
-                        {card.time}
-                      </p>
-                    </div>
-                  ) : (
-                    <p className="mt-4 text-3xl font-semibold text-slate-900 dark:text-[#f6f8ff]">
-                      {card.value}
-                    </p>
-                  )}
+                    )}
+                  </div>
                 </div>
               ))}
             </div>

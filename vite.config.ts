@@ -6,7 +6,8 @@ import path from 'path'
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
-  const aiApiProxyTarget = env.AI_API_PROXY_TARGET || 'http://localhost:8000'
+  const aiApiProxyTarget = env.AI_API_PROXY_TARGET
+  const apiProxyTarget = env.API_PROXY_TARGET
 
   return {
     plugins: [
@@ -18,6 +19,11 @@ export default defineConfig(({ mode }) => {
         'glitzy-produce-shifter.ngrok-free.dev'
       ],
       proxy: {
+        '/api': {
+          target: apiProxyTarget,
+          changeOrigin: true,
+          rewrite: (url) => url.replace(/^\/api/, ''),
+        },
         '/ai-api': {
           target: aiApiProxyTarget,
           changeOrigin: true,

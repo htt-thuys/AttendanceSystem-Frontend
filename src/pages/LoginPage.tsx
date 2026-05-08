@@ -2,6 +2,8 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../assets/LogoEnclave.png'
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '/api').replace(/\/$/, '')
+
 const LoginPage: React.FC = () => {
   const navigate = useNavigate()
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
@@ -17,7 +19,7 @@ const LoginPage: React.FC = () => {
     }
 
     try {
-      const response = await fetch('https://luetta-unworshiped-superspiritually.ngrok-free.dev/auth/login', {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

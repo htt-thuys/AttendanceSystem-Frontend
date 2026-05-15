@@ -15,6 +15,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
     ],
     server: {
+      server: '0.0.0.0',
       allowedHosts: [
         'glitzy-produce-shifter.ngrok-free.dev'
       ],
@@ -27,6 +28,7 @@ export default defineConfig(({ mode }) => {
         '/ai-api': {
           target: aiApiProxyTarget,
           changeOrigin: true,
+          ws: true,
           rewrite: (url) => url.replace(/^\/ai-api/, ''),
         },
       },

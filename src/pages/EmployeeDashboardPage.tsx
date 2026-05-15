@@ -1,9 +1,14 @@
 import React from 'react'
 import Header from '@/shared/components/common/Header'
+import { getEmployees, getEmployeeAttendanceHistory } from '@/modules/event/services'
+import type { Employee, AttendanceRecord } from '@/modules/event/types'
 
 const EmployeeDashboardPage: React.FC = () => {
   const employeeName = localStorage.getItem('full_name') || 'Employee'
   const [now, setNow] = React.useState(() => new Date())
+  const [attendanceLogs, setAttendanceLogs] = React.useState<AttendanceRecord[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
 
   React.useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -14,6 +19,36 @@ const EmployeeDashboardPage: React.FC = () => {
       window.clearInterval(intervalId)
     }
   }, [])
+
+  React.useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+
+    getEmployees()
+      .then((emps) => {
+        if (cancelled) return
+        const matched = emps.find((e) => e.full_name === employeeName)
+        if (matched) {
+          return getEmployeeAttendanceHistory(matched.id)
+        }
+        return [] as AttendanceRecord[]
+      })
+      .then((records) => {
+        if (cancelled) return
+        setAttendanceLogs(records ?? [])
+      })
+      .catch((err) => {
+        if (cancelled) return
+        setError(err instanceof Error ? err.message : 'Failed to load attendance data')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [employeeName])
 
   const localTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
   const localDate = new Intl.DateTimeFormat('en-US', {
@@ -33,9 +68,13 @@ const EmployeeDashboardPage: React.FC = () => {
   const offsetSign = offsetMinutes >= 0 ? '+' : '-'
   const offsetHours = Math.floor(Math.abs(offsetMinutes) / 60)
   const offsetRemainder = Math.abs(offsetMinutes) % 60
-  const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}${
-    offsetRemainder ? `:${String(offsetRemainder).padStart(2, '0')}` : ''
-  }`
+  const utcOffset = `UTC${offsetSign}${String(offsetHours).padStart(2, '0')}${offsetRemainder ? `:${String(offsetRemainder).padStart(2, '0')}` : ''}`
+
+  const eventIds = new Set(attendanceLogs.map((l) => l.event_id).filter(Boolean))
+  const eventsAttended = eventIds.size
+  const presentCount = attendanceLogs.filter((l) => l.status === 'present').length
+  const onTimeRate = attendanceLogs.length > 0 ? Math.round((presentCount / attendanceLogs.length) * 100) : 0
+
   const attendanceCards = [
     {
       title: 'Today',
@@ -46,7 +85,7 @@ const EmployeeDashboardPage: React.FC = () => {
     },
     {
       title: 'Events Attended',
-      value: '21',
+      value: loading ? '...' : String(eventsAttended),
       date: null,
       time: null,
       meta: 'Total events',
@@ -54,40 +93,37 @@ const EmployeeDashboardPage: React.FC = () => {
     },
     {
       title: 'On-time Rate',
-      value: '95%',
+      value: loading ? '...' : `${onTimeRate}%`,
       date: null,
       time: null,
-      meta: 'Check-ins',
+      meta: `${presentCount} / ${attendanceLogs.length} check-ins`,
       accent: 'bg-amber-500/10 text-amber-500',
     },
   ]
 
-  const logs = [
-    {
-      date: 'Oct 24, 2024',
-      checkIn: '08:50 AM',
-      checkOut: '06:10 PM',
-      total: '9h 20m',
-      status: 'On Time',
-      statusTone: 'bg-emerald-500/15 text-emerald-500',
-    },
-    {
-      date: 'Oct 23, 2024',
-      checkIn: '09:15 AM',
-      checkOut: '06:05 PM',
-      total: '8h 50m',
-      status: 'Late',
-      statusTone: 'bg-amber-500/15 text-amber-500',
-    },
-    {
-      date: 'Oct 22, 2024',
-      checkIn: '08:40 AM',
-      checkOut: '06:12 PM',
-      total: '9h 32m',
-      status: 'On Time',
-      statusTone: 'bg-emerald-500/15 text-emerald-500',
-    },
-  ]
+  const formatDateTime = (iso: string | null) => {
+    if (!iso) return { date: '—', time: '—' }
+    const d = new Date(iso)
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+    return {
+      date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: tz }),
+      time: d
+        .toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true, timeZone: tz })
+        .replace(':00 ', ' '),
+    }
+  }
+
+  const statusLabel = (status: string | null): string => {
+    if (!status) return 'Unknown'
+    const map: Record<string, string> = { present: 'On Time', late: 'Late', absent: 'Absent', not_checked_in: 'N/A' }
+    return map[status] ?? status
+  }
+
+  const statusTone = (status: string | null): string => {
+    if (status === 'present') return 'bg-emerald-500/15 text-emerald-500'
+    if (status === 'late') return 'bg-amber-500/15 text-amber-500'
+    return 'bg-rose-500/15 text-rose-500'
+  }
 
   const announcements = [
     {
@@ -126,8 +162,8 @@ const EmployeeDashboardPage: React.FC = () => {
   const [showAllAnnouncements, setShowAllAnnouncements] = React.useState(false)
   const [currentPage, setCurrentPage] = React.useState(1)
   const pageSize = 10
-  const totalPages = Math.max(1, Math.ceil(logs.length / pageSize))
-  const pagedLogs = logs.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  const totalPages = Math.max(1, Math.ceil(attendanceLogs.length / pageSize))
+  const pagedLogs = attendanceLogs.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   const visibleAnnouncements = showAllAnnouncements ? announcements : announcements.slice(0, 3)
 
   return (
@@ -277,28 +313,41 @@ const EmployeeDashboardPage: React.FC = () => {
                 </button>
               </div>
 
+              {error && (
+                <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-300">
+                  {error}
+                </div>
+              )}
+
               <div className="mt-6 overflow-hidden rounded-2xl border border-slate-200/70 dark:border-[rgba(86,112,170,0.35)]">
-                <div className="grid grid-cols-5 gap-4 bg-slate-50/90 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-[rgba(16,24,44,0.9)] dark:text-[rgba(170,184,214,0.7)]">
+                <div className="grid grid-cols-4 gap-4 bg-slate-50/90 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-slate-500 dark:bg-[rgba(16,24,44,0.9)] dark:text-[rgba(170,184,214,0.7)]">
                   <span>Date</span>
                   <span>Check In</span>
-                  <span>Check Out</span>
-                  <span>Total Hours</span>
+                  <span>Event</span>
                   <span>Status</span>
                 </div>
-                {pagedLogs.map((log) => (
-                  <div
-                    key={log.date}
-                    className="grid grid-cols-5 items-center gap-4 border-t border-slate-200/70 bg-white/70 px-6 py-4 text-sm text-slate-600 dark:border-[rgba(86,112,170,0.35)] dark:bg-[rgba(20,28,52,0.92)] dark:text-[rgba(170,184,214,0.8)]"
-                  >
-                    <span className="font-semibold text-slate-900 dark:text-[#f6f8ff]">{log.date}</span>
-                    <span>{log.checkIn}</span>
-                    <span>{log.checkOut}</span>
-                    <span>{log.total}</span>
-                    <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${log.statusTone}`}>
-                      {log.status}
-                    </span>
-                  </div>
-                ))}
+                {loading ? (
+                  <div className="px-6 py-12 text-center text-sm text-slate-400">Loading attendance records...</div>
+                ) : pagedLogs.length === 0 ? (
+                  <div className="px-6 py-12 text-center text-sm text-slate-400">No attendance records found.</div>
+                ) : (
+                  pagedLogs.map((log) => {
+                    const { date, time } = formatDateTime(log.check_in_at)
+                    return (
+                      <div
+                        key={log.id}
+                        className="grid grid-cols-4 items-center gap-4 border-t border-slate-200/70 bg-white/70 px-6 py-4 text-sm text-slate-600 dark:border-[rgba(86,112,170,0.35)] dark:bg-[rgba(20,28,52,0.92)] dark:text-[rgba(170,184,214,0.8)]"
+                      >
+                        <span className="font-semibold text-slate-900 dark:text-[#f6f8ff]">{date}</span>
+                        <span>{time}</span>
+                        <span className="text-xs text-slate-400">{log.event_id}</span>
+                        <span className={`inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold ${statusTone(log.status)}`}>
+                          {statusLabel(log.status)}
+                        </span>
+                      </div>
+                    )
+                  })
+                )}
               </div>
 
               {totalPages > 1 && (

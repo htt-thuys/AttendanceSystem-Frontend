@@ -65,6 +65,17 @@ export function getAttendanceStats(eventId: string): Promise<AttendanceStats> {
   return request<AttendanceStats>(`/attendance/stats?event_id=${eventId}`)
 }
 
+export function getAllAttendanceHistory(
+  limit: number = 100,
+  skip: number = 0,
+): Promise<AttendanceRecord[]> {
+  return request<AttendanceRecord[]>(`/attendance/history?limit=${limit}&skip=${skip}`)
+}
+
+export function getEmployeeAttendanceHistory(employeeId: string): Promise<AttendanceRecord[]> {
+  return request<AttendanceRecord[]>(`/attendance/history?employee_id=${employeeId}`)
+}
+
 // ─── Employees ─────────────────────────────────────────
 
 export function getEmployees(): Promise<Employee[]> {

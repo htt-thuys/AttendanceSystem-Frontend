@@ -5,6 +5,8 @@ import RecognitionPage from './pages/RecognitionPage'
 import AdminDashboardPage from './pages/AdminDashboardPage'
 import AdminUserPage from './pages/admin/AdminUserPage'
 import AdminAttendanceLogsPage from './pages/admin/AdminAttendanceLogsPage'
+import AdminEventListPage from './pages/admin/AdminEventListPage'
+import AdminEventDetailPage from './pages/admin/AdminEventDetailPage'
 import EmployeeDashboardPage from './pages/EmployeeDashboardPage'
 
 const RequireAuth: React.FC<{ children: React.ReactElement }> = ({ children }) => {
@@ -51,6 +53,8 @@ const App: React.FC = () => {
         <Route index element={<Navigate to="/admin/user" replace />} />
         <Route path="user" element={<AdminUserPage />} />
         <Route path="attendance-logs" element={<AdminAttendanceLogsPage />} />
+        <Route path="events" element={<AdminEventListPage />} />
+        <Route path="events/:eventId" element={<AdminEventDetailPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

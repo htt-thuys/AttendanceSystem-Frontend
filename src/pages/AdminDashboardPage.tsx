@@ -37,6 +37,9 @@ const AdminDashboardPage: React.FC = () => {
             <NavLink to="/admin/attendance-logs" className={tabClass}>
               Attendance Logs
             </NavLink>
+            <NavLink to="/admin/events" className={tabClass}>
+              Events
+            </NavLink>
           </div>
         </header>
         <Outlet />

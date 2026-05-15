@@ -211,7 +211,10 @@ function getOverlayLabelText(
     matched.user_name ||
     matched.user_id ||
     (matched.label === 'unknown' ? 'Unknown' : matched.label.toUpperCase());
-  const sim = typeof matched.similarity === 'number' ? `${Math.round(matched.similarity * 100)}%` : null;
+  const sim =
+    typeof matched.similarity === 'number'
+      ? `${(matched.similarity * 100).toFixed(1)}%`
+      : null;
   const trackId = matched.track_id ?? index + 1;
   return sim ? `${trackId}. ${name} ${sim}` : `${trackId}. ${name}`;
 }

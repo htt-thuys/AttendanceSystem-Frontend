@@ -1,6 +1,77 @@
 import React from 'react'
+import { getEmployees, getAllAttendanceHistory } from '@/modules/event/services'
+import type { Employee, AttendanceRecord } from '@/modules/event/types'
 
 const AdminAttendanceLogsPage: React.FC = () => {
+  const [employees, setEmployees] = React.useState<Employee[]>([])
+  const [logs, setLogs] = React.useState<AttendanceRecord[]>([])
+  const [loading, setLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    Promise.all([getEmployees(), getAllAttendanceHistory(500)])
+      .then(([emps, records]) => {
+        setEmployees(emps)
+        setLogs(records)
+      })
+      .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load attendance logs'))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const employeeMap = React.useMemo(() => {
+    const map = new Map<string, Employee>()
+    for (const e of employees) map.set(e.id, e)
+    return map
+  }, [employees])
+
+  const totalCheckIns = logs.length
+  const presentCount = logs.filter((l) => l.status === 'present').length
+  const successRate = totalCheckIns > 0 ? ((presentCount / totalCheckIns) * 100).toFixed(1) : '0.0'
+  const reviewCount = logs.filter((l) => l.status !== 'present' || !l.status).length
+
+  const formatTime = (iso: string | null): string => {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return d
+      .toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+      .replace(':00 ', ' ')
+  }
+
+  const formatDate = (iso: string | null): string => {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    return d.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    })
+  }
+
+  const statusLabel = (status: string | null): string => {
+    if (!status) return 'Unknown'
+    const map: Record<string, string> = {
+      present: 'Success',
+      late: 'Late',
+      absent: 'Absent',
+      not_checked_in: 'Not Checked In',
+    }
+    return map[status] ?? status
+  }
+
+  const statusStyle = (status: string | null): string => {
+    if (status === 'present')
+      return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300'
+    if (status === 'late')
+      return 'bg-amber-500/15 text-amber-600 dark:text-amber-300'
+    return 'bg-rose-500/15 text-rose-600 dark:text-rose-300'
+  }
+
   return (
     <section className="rounded-2xl border border-slate-200/80 bg-white/80 p-6 shadow-sm backdrop-blur-xl dark:border-[rgba(86,112,170,0.55)] dark:bg-[rgba(28,38,64,0.92)]">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -23,11 +94,17 @@ const AdminAttendanceLogsPage: React.FC = () => {
         </div>
       </div>
 
+      {error && (
+        <div className="mt-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/30 dark:text-red-300">
+          {error}
+        </div>
+      )}
+
       <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
         {[
-          { title: 'Total Check-ins', value: '1,284', trend: '+12% from yesterday' },
-          { title: 'Success Rate', value: '98.5%', trend: 'Average confidence: 97.2%' },
-          { title: 'Failed Detections', value: '18', trend: 'Requires manual review' },
+          { title: 'Total Check-ins', value: totalCheckIns.toLocaleString(), trend: loading ? 'Loading...' : 'All records' },
+          { title: 'Success Rate', value: `${successRate}%`, trend: `${presentCount} present out of ${totalCheckIns}` },
+          { title: 'Needs Review', value: `${reviewCount}`, trend: 'Requires manual review' },
         ].map((card) => (
           <div
             key={card.title}
@@ -46,40 +123,43 @@ const AdminAttendanceLogsPage: React.FC = () => {
           <span>Employee</span>
           <span>Department</span>
           <span>Status</span>
-          <span className="text-right">AI Confidence</span>
+          <span className="text-right">Note</span>
         </div>
-        {[
-          { time: '08:15 AM', date: 'Oct 24, 2024', name: 'Eleanor Vance', dept: 'Engineering', status: 'Success', score: '99.8%' },
-          { time: '08:42 AM', date: 'Oct 24, 2024', name: 'Theo Crain', dept: 'Marketing', status: 'Success', score: '97.4%' },
-          { time: '09:01 AM', date: 'Oct 24, 2024', name: 'Shirley Crain', dept: 'HR', status: 'Needs Review', score: '86.2%' },
-        ].map((log) => (
-          <div
-            key={log.time}
-            className="grid grid-cols-5 items-center gap-4 border-t border-slate-200/70 bg-white/70 px-6 py-4 text-sm text-slate-600 dark:border-[rgba(86,112,170,0.35)] dark:bg-[rgba(20,28,52,0.92)] dark:text-[rgba(170,184,214,0.8)]"
-          >
-            <div>
-              <p className="font-semibold text-slate-900 dark:text-[#f6f8ff]">{log.time}</p>
-              <p className="text-xs text-slate-400">{log.date}</p>
-            </div>
-            <div>
-              <p className="font-semibold text-slate-900 dark:text-[#f6f8ff]">{log.name}</p>
-              <p className="text-xs text-slate-400">EMP-00X</p>
-            </div>
-            <span>{log.dept}</span>
-            <span>
-              <span
-                className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${
-                  log.status === 'Success'
-                    ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300'
-                    : 'bg-amber-500/15 text-amber-600 dark:text-amber-300'
-                }`}
+        {loading ? (
+          <div className="px-6 py-12 text-center text-sm text-slate-400">Loading attendance logs...</div>
+        ) : logs.length === 0 ? (
+          <div className="px-6 py-12 text-center text-sm text-slate-400">No attendance records found.</div>
+        ) : (
+          logs.map((log) => {
+            const emp = employeeMap.get(log.employee_id)
+            return (
+              <div
+                key={log.id}
+                className="grid grid-cols-5 items-center gap-4 border-t border-slate-200/70 bg-white/70 px-6 py-4 text-sm text-slate-600 dark:border-[rgba(86,112,170,0.35)] dark:bg-[rgba(20,28,52,0.92)] dark:text-[rgba(170,184,214,0.8)]"
               >
-                {log.status}
-              </span>
-            </span>
-            <span className="text-right font-semibold text-emerald-600 dark:text-emerald-300">{log.score}</span>
-          </div>
-        ))}
+                <div>
+                  <p className="font-semibold text-slate-900 dark:text-[#f6f8ff]">{formatTime(log.check_in_at)}</p>
+                  <p className="text-xs text-slate-400">{formatDate(log.check_in_at)}</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-slate-900 dark:text-[#f6f8ff]">
+                    {emp?.full_name ?? log.employee_id}
+                  </p>
+                  <p className="text-xs text-slate-400">{emp?.employee_code ?? ''}</p>
+                </div>
+                <span>{emp?.position || '—'}</span>
+                <span>
+                  <span
+                    className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${statusStyle(log.status)}`}
+                  >
+                    {statusLabel(log.status)}
+                  </span>
+                </span>
+                <span className="text-right text-xs text-slate-400">{log.note || '—'}</span>
+              </div>
+            )
+          })
+        )}
       </div>
     </section>
   )
